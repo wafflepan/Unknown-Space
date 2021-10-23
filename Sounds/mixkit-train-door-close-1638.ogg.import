@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/mixkit-train-door-close-1638.ogg-4132c4577a381a9b380d69ab08fa1af5.oggstr"
+
+[deps]
+
+source_file="res://Sounds/mixkit-train-door-close-1638.ogg"
+dest_files=[ "res://.import/mixkit-train-door-close-1638.ogg-4132c4577a381a9b380d69ab08fa1af5.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

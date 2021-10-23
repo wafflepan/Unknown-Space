@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/mixkit-futuristic-door-opening-906.ogg-2f37eb27e45d29e5c1437a0b1c90251f.oggstr"
+
+[deps]
+
+source_file="res://Sounds/mixkit-futuristic-door-opening-906.ogg"
+dest_files=[ "res://.import/mixkit-futuristic-door-opening-906.ogg-2f37eb27e45d29e5c1437a0b1c90251f.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0
