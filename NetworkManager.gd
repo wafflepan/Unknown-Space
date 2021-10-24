@@ -38,6 +38,10 @@ func joinServer(clientdata):
 remote func register_player(info):
 	var id = get_tree().get_rpc_sender_id()
 	players[id] = info
+	
+	var newplayer = get_tree().get_root().get_node("GameWorld").createNewPlayer(info)
+	
+	newplayer.set_network_master(id)
 
 func getConnectionStatus():
 	if currentconnection:
@@ -51,9 +55,7 @@ func _server_disconnected():
 #	get_tree().quit()
 
 func _connected_ok():
-	print("Player Connected Ok ",get_tree().get_network_unique_id())
-	players[get_tree().get_network_unique_id()] = selfdata
-	rpc('sendPlayerInfo',get_tree().get_network_unique_id(),selfdata)
+	pass
 
 func _connected_fail():
 	pass
@@ -70,5 +72,7 @@ remote func sendPlayerInfo(id, data):
 	newplayer.set_network_master(id)
 
 func _player_connected(id):
-	print("Player Connected: ",id)
+	print("Player Connected Ok ",get_tree().get_network_unique_id(),"  ",id)
+	players[get_tree().get_network_unique_id()] = selfdata
+#	rpc('sendPlayerInfo',get_tree().get_network_unique_id(),selfdata)
 	rpc_id(id,"register_player",selfdata)
