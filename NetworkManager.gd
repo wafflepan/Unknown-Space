@@ -35,6 +35,9 @@ func joinServer(clientdata):
 		print("ERROR JOINING SERVER")
 	get_tree().set_network_peer(peer)
 
+remote func register_player(info):
+	var id = get_tree().get_rpc_sender_id()
+	players[id] = info
 
 func getConnectionStatus():
 	if currentconnection:
@@ -44,11 +47,17 @@ func getConnectionStatus():
 		return null
 
 func _server_disconnected():
-	get_tree().quit()
+	print("Server Disconnected!")
+#	get_tree().quit()
 
 func _connected_ok():
+	print("Player Connected Ok ",get_tree().get_network_unique_id())
 	players[get_tree().get_network_unique_id()] = selfdata
 	rpc('sendPlayerInfo',get_tree().get_network_unique_id(),selfdata)
+
+func _connected_fail():
+	pass
+	print("Connection Could Not Be Completed.")
 
 remote func sendPlayerInfo(id, data):
 	if get_tree().is_network_server():
@@ -62,3 +71,4 @@ remote func sendPlayerInfo(id, data):
 
 func _player_connected(id):
 	print("Player Connected: ",id)
+	rpc_id(id,"register_player",selfdata)
