@@ -36,6 +36,7 @@ func joinServer(clientdata):
 	get_tree().set_network_peer(peer)
 
 remote func register_player(info):
+	print("Registering player: ",info)
 	var id = get_tree().get_rpc_sender_id()
 	players[id] = info
 	
@@ -54,7 +55,8 @@ func _server_disconnected():
 	print("Server Disconnected!")
 #	get_tree().quit()
 
-func _connected_ok():
+func _connected_ok(id):
+	print("connected ok: ",id)
 	pass
 
 func _connected_fail():
