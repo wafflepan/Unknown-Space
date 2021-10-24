@@ -10,10 +10,10 @@ func getPromptData():
 func _on_CreateServer_pressed():
 	print("Server created with following data:", getPromptData())
 	NetworkManager.createServer(getPromptData())
-	get_tree().change_scene("res://GameWorld.tscn")
+#	get_tree().change_scene("res://GameWorld.tscn")
 
 
 func _on_JoinServer_pressed():
 	print("Server joined with following data:", getPromptData())
 	NetworkManager.joinServer(getPromptData())
-	get_tree().change_scene("res://GameWorld.tscn")
+#	get_tree().change_scene("res://GameWorld.tscn")

@@ -4,12 +4,14 @@ const MAX_PLAYERS = 5
 
 var players = {}
 
-var selfdata = {}
+var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
+var my_network_id = null
+#
+#    network_peer_connected(int id)
+#    network_peer_disconnected(int id)
+#
 
 var currentconnection = null
-
-func getData():
-	return selfdata
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
@@ -17,64 +19,73 @@ func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	var timer = Timer.new()
+	timer.wait_time=4
+	timer.connect("timeout",self,"checkPlayerList")
+	self.add_child(timer)
+	timer.start()
 
-func createServer(creatordata):
-	selfdata["Username"] = creatordata["Username"]
-	var peer = NetworkedMultiplayerENet.new()
-	players[1] = creatordata
-	var error = peer.create_server(int(creatordata["Port"]),int(MAX_PLAYERS))
-	if error:
-		print("ERROR CREATING SERVER: ",error)
-	get_tree().set_network_peer(peer)
-
-func joinServer(clientdata):
-	selfdata["Username"] = clientdata["Username"]
-	var peer = NetworkedMultiplayerENet.new()
-	var error = peer.create_client((clientdata["Address"]), int(clientdata["Port"]))
-	if error:
-		print("ERROR JOINING SERVER")
-	get_tree().set_network_peer(peer)
-
-remote func register_player(info):
-	print("Registering player: ",info)
-	var id = get_tree().get_rpc_sender_id()
-	players[id] = info
-	
-	var newplayer = get_tree().get_root().get_node("GameWorld").createNewPlayer(info)
-	
-	newplayer.set_network_master(id)
-
-func getConnectionStatus():
-	if currentconnection:
-		print(currentconnection.get_connection_status())
-		return currentconnection.get_connection_status()
-	else:
-		return null
-
-func _server_disconnected():
-	print("Server Disconnected!")
-#	get_tree().quit()
-
-func _connected_ok(id):
-	print("connected ok: ",id)
-	pass
-
-func _connected_fail():
-	pass
-	print("Connection Could Not Be Completed.")
-
-remote func sendPlayerInfo(id, data):
-	if get_tree().is_network_server():
-		for peer in players:
-			rpc_id(id,'sendPlayerInfo',peer,players[peer])
-	players[id] = data
-	
-	var newplayer = get_tree().get_root().get_node("GameWorld").createNewPlayer(data)
-	
-	newplayer.set_network_master(id)
+func checkPlayerList():
+	print(players)
 
 func _player_connected(id):
-	print("Player Connected Ok ",get_tree().get_network_unique_id(),"  ",id)
-	players[get_tree().get_network_unique_id()] = selfdata
-#	rpc('sendPlayerInfo',get_tree().get_network_unique_id(),selfdata)
-	rpc_id(id,"register_player",selfdata)
+	print("Player_connected called on client ",get_tree().get_network_unique_id()," with id ",id)
+	# Called on both clients and server when a peer connects. Send my info to it.
+	rpc_id(id, "register_player", my_info)
+
+remote func register_player(info):
+	pass
+	print("REGISTERPLAYER called on client ",get_tree().get_network_unique_id()," with info ",info)
+	
+
+func createServer(inputdict):
+	setMyInfo(inputdict)
+	players[1] = my_info
+	my_network_id=1
+	var peer = NetworkedMultiplayerENet.new()
+	var error = peer.create_server(23399, MAX_PLAYERS)
+	if error:
+		print("Error creating server: ",error)
+	get_tree().set_network_peer(peer)
+
+func joinServer(inputdict):
+	setMyInfo(inputdict)
+	var peer = NetworkedMultiplayerENet.new()
+	var error = peer.create_client(inputdict["Address"],23399)
+	if error:
+		print("Error joining server: ",error)
+	get_tree().set_network_peer(peer)
+
+func setMyInfo(inputdict):
+	pass
+	my_info = inputdict
+
+func _player_disconnected(id):
+	print("Player Disconnected called on client ",get_tree().get_network_unique_id()," with id ",id)
+	players.erase(id) # Erase player from info.
+
+func _connected_ok():
+	my_network_id = get_tree().get_network_unique_id()
+	print("connected_ok called on client ",get_tree().get_network_unique_id())
+	rpc_id(1,"notifyPlayerConnection",my_network_id,my_info)
+	pass # Only called on clients, not server. Will go unused; not useful here.
+
+remote func notifyPlayerConnection(id,info):
+	print("Client ",get_tree().get_network_unique_id()," notified of connection from client id ",id," with info ",info)
+	players[id]=info
+
+func _server_disconnected():
+	print("server_diconnected called on client ",get_tree().get_network_unique_id())
+	pass # Server kicked us; show error and abort.
+
+func _connected_fail():
+	print("connected_failed called on client ",get_tree().get_network_unique_id())
+	pass # Could not even connect to server; abort.
+
+func _process(delta):
+	if get_tree().get_network_peer():
+		rpc("connectionNotify",get_tree().get_network_unique_id(),my_info,randf())
+
+remote func connectionNotify(id,info,number):
+	pass
+	print("Notification on client ",get_tree().get_network_unique_id()," by ",id, "  ",info,"  ", number)
