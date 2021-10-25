@@ -1,21 +1,12 @@
 extends KinematicBody2D
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 var velocity = 0
 var velocitymax = 300
 
 var deccel = 40
 var accel = 10
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	$ActorName.text = self.name
-
-func setName(value):
+func setDisplayName(value):
 	$ActorName.text=value
 
 func getInput():

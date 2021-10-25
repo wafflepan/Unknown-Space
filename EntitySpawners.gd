@@ -5,7 +5,7 @@ func _ready():
 
 func setupEntities():
 	for tilecoord in get_used_cells():
-		print(tilecoord)
+#		print(tilecoord)
 		var id = get_cell(tilecoord.x,tilecoord.y)
 		var entityname = self.tile_set.tile_get_name(id)
 		var newentity = load("res://"+str(entityname)+".tscn").instance()

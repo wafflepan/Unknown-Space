@@ -10,6 +10,8 @@ func _ready():
 	call_deferred("updateTileLocation",coordinates)
 #	call_deferred("close")
 
+#TODO: have stuff in here to detect if adjacent tiles are floor, wall, or void
+
 #remotesync func setClosed(): #Force door closed without animation or sound
 #	if $AnimationPlayer.current_animation_positio
 #	$AnimationPlayer.seek(0,true)

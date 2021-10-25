@@ -1,17 +1,33 @@
 extends Node
 
-const MAX_PLAYERS = 5
+const MAX_PLAYERS:int = 5
 
-var players = {}
+signal update_connected_players
+signal playerdisconnected
+signal newplayerconnected
 
-var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
-var my_network_id = null
+var players:Dictionary = {} #List of players in lobby
+
+var DEFAULT_ADDRESS:String= '73.240.25.244'
+var DEFAULT_PORT:int = 60000
+
+var my_info:Dictionary = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
 #
 #    network_peer_connected(int id)
 #    network_peer_disconnected(int id)
-#
+#2601:1c0:8100:17:6d7f:5764:d376:9408
 
 var currentconnection = null
+
+func getData():
+	pass
+	return my_info
+
+remote func clientToServerNotification(alert):
+	if multiplayer.is_network_server():
+		print("SERVERNOTIFICATION: ",alert)
+	else:
+		print("Tried to issue server notification to a client.")
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
@@ -25,67 +41,49 @@ func _ready():
 	self.add_child(timer)
 	timer.start()
 
-func checkPlayerList():
-	print(players)
-
-func _player_connected(id):
-	print("Player_connected called on client ",get_tree().get_network_unique_id()," with id ",id)
-	# Called on both clients and server when a peer connects. Send my info to it.
-	rpc_id(id, "register_player", my_info)
-
-remote func register_player(info):
-	pass
-	print("REGISTERPLAYER called on client ",get_tree().get_network_unique_id()," with info ",info)
-	
-
 func createServer(inputdict):
-	setMyInfo(inputdict)
+	my_info = (inputdict)
 	players[1] = my_info
-	my_network_id=1
 	var peer = NetworkedMultiplayerENet.new()
-	var error = peer.create_server(23399, MAX_PLAYERS)
+	var error = peer.create_server(int(inputdict["Port"]), MAX_PLAYERS)
 	if error:
 		print("Error creating server: ",error)
-	get_tree().set_network_peer(peer)
+	else:
+		get_tree().set_network_peer(peer)
+	return error
+
+func checkPlayerList():
+	if multiplayer.network_peer:
+		return multiplayer.get_network_connected_peers()
 
 func joinServer(inputdict):
-	setMyInfo(inputdict)
+	my_info = inputdict
 	var peer = NetworkedMultiplayerENet.new()
-	var error = peer.create_client(inputdict["Address"],23399)
+	var error = peer.create_client(inputdict["Address"],int(inputdict["Port"]))
 	if error:
 		print("Error joining server: ",error)
-	get_tree().set_network_peer(peer)
+	else:
+		get_tree().set_network_peer(peer)
+	return error
 
-func setMyInfo(inputdict):
-	pass
-	my_info = inputdict
+remotesync func registerPlayer(id,info):
+	players[id]=info
+	emit_signal("update_connected_players")
+	emit_signal("newplayerconnected",id,info)
+
+func _player_connected(id):
+	print("Player_Connected called by ID ",id," on client ",multiplayer.get_network_unique_id())
+	rpc("registerPlayer",multiplayer.get_network_unique_id(),my_info)#Send new client my info
 
 func _player_disconnected(id):
-	print("Player Disconnected called on client ",get_tree().get_network_unique_id()," with id ",id)
-	players.erase(id) # Erase player from info.
+	print("Player Disconnected: ",id)
+	players.erase(id)
+	emit_signal("update_connected_players")
+	emit_signal("playerdisconnected",id)
 
 func _connected_ok():
-	my_network_id = get_tree().get_network_unique_id()
-	print("connected_ok called on client ",get_tree().get_network_unique_id())
-	rpc_id(1,"notifyPlayerConnection",my_network_id,my_info)
-	pass # Only called on clients, not server. Will go unused; not useful here.
-
-remote func notifyPlayerConnection(id,info):
-	print("Client ",get_tree().get_network_unique_id()," notified of connection from client id ",id," with info ",info)
-	players[id]=info
-
-func _server_disconnected():
-	print("server_diconnected called on client ",get_tree().get_network_unique_id())
-	pass # Server kicked us; show error and abort.
-
-func _connected_fail():
-	print("connected_failed called on client ",get_tree().get_network_unique_id())
-	pass # Could not even connect to server; abort.
-
-func _process(delta):
-	if get_tree().get_network_peer():
-		rpc("connectionNotify",get_tree().get_network_unique_id(),my_info,randf())
-
-remote func connectionNotify(id,info,number):
 	pass
-	print("Notification on client ",get_tree().get_network_unique_id()," by ",id, "  ",info,"  ", number)
+	print("Connected_OK called by ",multiplayer.get_network_unique_id()) #Only called on clients, not server. Useful for setting flags or maybe requesting game data?
+
+func terminateConnection():
+	get_tree().network_peer=null
