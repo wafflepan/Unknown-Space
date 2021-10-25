@@ -6,6 +6,11 @@ var velocitymax = 300
 var deccel = 40
 var accel = 10
 
+func _ready():
+	if !is_network_master():
+		set_process_input(false)
+		set_physics_process(false)
+
 func setDisplayName(value):
 	$ActorName.text=value
 

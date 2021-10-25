@@ -39,6 +39,8 @@ func createNewPlayer(data,id):
 
 func removePlayer(id):
 	pass
+	var player = $YSort/Entities.get_node(str(id))
+	$YSort/Entities.remove_child(player)
 	#Delete a player that's disconnected
 
 func getGrid():

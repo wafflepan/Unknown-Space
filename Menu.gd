@@ -1,6 +1,8 @@
 extends Control
 
 func _ready():
+	if NetworkManager.SERVER_DISCONNECT_FLAG:
+		$ServerDisconnectNotification.popup_centered()
 	NetworkManager.connect("update_connected_players",self,"updateConnectedPlayers")
 	$ServerConfirm.connect("confirmed",self,"serverStartButton")
 	$ServerConfirm.add_button("Cancel",true,"cancel_server")

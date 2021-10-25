@@ -6,6 +6,8 @@ signal update_connected_players
 signal playerdisconnected
 signal newplayerconnected
 
+var SERVER_DISCONNECT_FLAG=false
+
 var players:Dictionary = {} #List of players in lobby
 
 var DEFAULT_ADDRESS:String= '73.240.25.244'
@@ -67,6 +69,7 @@ func joinServer(inputdict):
 	return error
 
 remotesync func registerPlayer(id,info):
+	print(multiplayer.get_network_unique_id(),": registerplayer ",id," ",info)
 	players[id]=info
 	emit_signal("update_connected_players")
 	emit_signal("newplayerconnected",id,info)
@@ -87,3 +90,8 @@ func _connected_ok():
 
 func terminateConnection():
 	get_tree().network_peer=null
+
+func _server_disconnected():
+	get_tree().network_peer=null
+	SERVER_DISCONNECT_FLAG=true
+	get_tree().change_scene("res://Menu.tscn")
