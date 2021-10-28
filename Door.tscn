@@ -18,8 +18,8 @@ tracks/0/enabled = true
 tracks/0/keys = {
 "times": PoolRealArray( 0, 1 ),
 "transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ 0, 1 ]
+"update": 0,
+"values": [ 0, 12 ]
 }
 tracks/1/type = "value"
 tracks/1/path = NodePath("LightOccluder2D:visible")
@@ -28,7 +28,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 0.8 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
@@ -57,8 +57,8 @@ height = 30.0
 
 [node name="Sprite" type="Sprite" parent="." index="0"]
 texture = ExtResource( 2 )
-vframes = 5
 hframes = 5
+vframes = 5
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." index="1"]
 
@@ -85,5 +85,6 @@ one_shot = true
 [node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="." index="6"]
 stream = ExtResource( 3 )
 attenuation = 3.03143
+
 [connection signal="body_entered" from="MotionSensor" to="." method="_on_MotionSensor_body_entered"]
 [connection signal="timeout" from="CloseTimer" to="." method="_on_CloseTimer_timeout"]

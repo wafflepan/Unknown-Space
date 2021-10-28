@@ -5,6 +5,8 @@ export (Vector2) var coordinates = null
 var isOpening=false
 var isClosing=false
 
+var isOpen=false
+
 func _ready():
 #	setClosed()
 	call_deferred("updateTileLocation",coordinates)
@@ -35,6 +37,7 @@ remotesync func open():
 	$AudioStreamPlayer.play()
 	yield($AnimationPlayer,"animation_finished")
 	isOpening=false
+	isOpen=true
 
 remotesync func close():
 	if isClosing:
@@ -44,10 +47,11 @@ remotesync func close():
 	$AudioStreamPlayer.play()
 	yield($AnimationPlayer,"animation_finished")
 	isClosing=false
+	isOpen=false
 
 
 func _on_MotionSensor_body_entered(body):
-	if body.is_in_group("players"):
+	if body.is_in_group("players") and !isOpen:
 		rpc("open")
 
 

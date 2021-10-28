@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/door1.png-be67b9c1ca1d6e71cd49af5cb51a0bd8.stex"
+path="res://.import/ui_chevron_up.png-6325867a6f8a5f5bcda4ae9507b021c5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://door1.png"
-dest_files=[ "res://.import/door1.png-be67b9c1ca1d6e71cd49af5cb51a0bd8.stex" ]
+source_file="res://Sprites/UI/ui_chevron_up.png"
+dest_files=[ "res://.import/ui_chevron_up.png-6325867a6f8a5f5bcda4ae9507b021c5.stex" ]
 
 [params]
 

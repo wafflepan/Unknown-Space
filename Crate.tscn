@@ -1,22 +1,24 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://crate1.png" type="Texture" id=1]
 [ext_resource path="res://Crate.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 30, 30 )
+extents = Vector2( 28, 22 )
 
-[node name="Crate" type="RigidBody2D"]
-mass = 100.0
-linear_damp = 5.0
+[node name="Crate" type="RigidBody2D" groups=["pushable"]]
+mode = 2
+linear_damp = 10.0
 angular_damp = 5.0
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-modulate = Color( 0.686275, 0.513726, 0.180392, 1 )
 texture = ExtResource( 1 )
+hframes = 5
+vframes = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 2 )
 shape = SubResource( 1 )
 
 [connection signal="sleeping_state_changed" from="." to="." method="_on_Crate_sleeping_state_changed"]
