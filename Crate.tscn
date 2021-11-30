@@ -8,8 +8,6 @@ extents = Vector2( 28, 22 )
 
 [node name="Crate" type="RigidBody2D" groups=["pushable"]]
 mode = 2
-linear_damp = 10.0
-angular_damp = 5.0
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

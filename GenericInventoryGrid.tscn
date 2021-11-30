@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GenericInventoryGrid.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+[node name="GenericInventoryGrid" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 74.0
+margin_top = 89.0
+margin_right = -450.0
+margin_bottom = -11.0
+custom_styles/panel = SubResource( 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+gridsize = Vector2( 3, 3 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Panels" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="resized" from="." to="." method="_on_GenericInventoryGrid_resized"]

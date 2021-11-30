@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://junk.png" type="Texture" id=1]
+[ext_resource path="res://InteractableJunk.gd" type="Script" id=2]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 20.0
+height = 25.0
+
+[node name="InteractableJunk" type="KinematicBody2D" groups=["can_hold"]]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+hframes = 2
+vframes = 2
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )

@@ -9,6 +9,11 @@ var isHidden=false
 var texture_down = preload("res://Sprites/UI/ui_chevron_down.png")
 var texture_up = preload("res://Sprites/UI/ui_chevron_up.png")
 
+func _ready():
+	DEFAULT_ANCHOR_TOP=get_parent().anchor_top
+	if get_parent().anchor_bottom == get_parent().anchor_top:
+		DEFAULT_ANCHOR_TOP=0
+
 func _on_PanelHideButton_pressed(): #Shows and hides the UI frame with a smooth animation
 	self.disabled=true
 	if DEFAULT_ANCHOR_TOP == 0:#Different settings for fixed-size UI elements

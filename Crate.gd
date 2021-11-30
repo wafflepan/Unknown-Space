@@ -13,4 +13,5 @@ remote func update_physics(tf,linvel,angvel):
 	angular_velocity=angvel
 
 func _on_Crate_sleeping_state_changed():
-	rpc_unreliable("update_physics",get_global_transform(),linear_velocity,angular_velocity)
+	if is_network_master():
+		rpc_unreliable("update_physics",get_global_transform(),linear_velocity,angular_velocity)
